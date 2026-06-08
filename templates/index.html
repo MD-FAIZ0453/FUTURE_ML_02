@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FutureSupport ML - Ticket Classification & Prioritization</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                </div>
+                <div class="logo-text">
+                    <h1>FutureSupport</h1>
+                    <span>ML Engine v1.0</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-tab="dashboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="10" rx="1"/><rect width="7" height="5" x="3" y="14" rx="1"/></svg>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-btn" data-tab="classifier">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z"/></svg>
+                    <span>Live Classifier</span>
+                </button>
+                <button class="nav-btn" data-tab="queue">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
+                    <span>Queue Console</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <span class="status-indicator online"></span>
+                    <span class="status-label">API Server Online</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h2 id="page-title">Operational Dashboard</h2>
+                    <p id="page-subtitle">Real-time statistics & Support Tickets ML metrics</p>
+                </div>
+                <div class="header-actions">
+                    <div class="date-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                        <span id="current-date">June 8, 2026</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- TAB 1: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-content active-tab">
+                <!-- Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon bg-blue">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers"><path d="m12 3-10 9 10 9 10-9Z"/><path d="m2 17 10 9 10-9"/><path d="m2 12 10 9 10-9"/></svg>
+                        </div>
+                        <div class="metric-details">
+                            <h3>Total Tickets</h3>
+                            <p class="metric-value" id="stat-total-tickets">8,469</p>
+                            <span class="metric-subtext">Historical dataset volume</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon bg-violet">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
+                        </div>
+                        <div class="metric-details">
+                            <h3>Auto-Routing Rate</h3>
+                            <p class="metric-value">100%</p>
+                            <span class="metric-subtext">Immediate routing workflow</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon bg-emerald">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </div>
+                        <div class="metric-details">
+                            <h3>Avg Target SLA</h3>
+                            <p class="metric-value" id="stat-avg-sla">10.2 hrs</p>
+                            <span class="metric-subtext">Weighted response target</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon bg-rose">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle-2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                        </div>
+                        <div class="metric-details">
+                            <h3>ML Classifier Tech</h3>
+                            <p class="metric-value">LinearSVC</p>
+                            <span class="metric-subtext">TF-IDF Vectorized (N-grams 1-2)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Layout -->
+                <div class="charts-layout">
+                    <div class="chart-card main-chart">
+                        <div class="chart-header">
+                            <h4>Ticket Volume by Category</h4>
+                            <p>Counts of incoming support ticket types</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card secondary-chart">
+                        <div class="chart-header">
+                            <h4>Priority Distribution</h4>
+                            <p>Severity breakdown of support cases</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="priorityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Performance and Insights -->
+                <div class="performance-section">
+                    <div class="section-card">
+                        <div class="card-title-bar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                            <h4>Model Accuracy & Real-world Challenges</h4>
+                        </div>
+                        <div class="performance-metrics">
+                            <div class="accuracy-badge-box">
+                                <div class="badge-item">
+                                    <span class="badge-label">Category Classifier Accuracy</span>
+                                    <span class="badge-value text-blue">21.61%</span>
+                                </div>
+                                <div class="badge-item">
+                                    <span class="badge-label">Priority Classifier Accuracy</span>
+                                    <span class="badge-value text-violet">25.32%</span>
+                                </div>
+                            </div>
+                            <div class="performance-narrative">
+                                <h5>Why is Model Accuracy at Random-Guess Levels?</h5>
+                                <p>
+                                    A key finding from exploring the Customer Support Ticket dataset is that the labels for <strong>Ticket Type</strong> and <strong>Ticket Priority</strong> are completely synthetic and lack correlation with the actual semantic content of the ticket descriptions. This represents a classic real-world data science scenario where:
+                                </p>
+                                <ul>
+                                    <li>Data labels are misaligned or randomly generated in database records.</li>
+                                    <li>Standard algorithms like LinearSVC achieve baseline random accuracy (20-25%).</li>
+                                    <li>The system operates as a decision-support foundation, routing cases while highlighting how operational processes require robust and clean ground-truth labeling to build higher fidelity models.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <div class="card-title-bar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-violet"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid"></svg></svg>
+                            <h4>Confusion Matrices Analysis</h4>
+                        </div>
+                        <div class="confusion-matrices-grid">
+                            <div class="matrix-preview">
+                                <h5>Category Confusion Matrix</h5>
+                                <div class="img-wrapper">
+                                    <img src="/static/images/category_confusion_matrix.png" alt="Category Confusion Matrix" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/a1a1aa?text=Category+Confusion+Matrix';">
+                                </div>
+                            </div>
+                            <div class="matrix-preview">
+                                <h5>Priority Confusion Matrix</h5>
+                                <div class="img-wrapper">
+                                    <img src="/static/images/priority_confusion_matrix.png" alt="Priority Confusion Matrix" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/a1a1aa?text=Priority+Confusion+Matrix';">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: LIVE CLASSIFIER -->
+            <section id="tab-classifier" class="tab-content">
+                <div class="classifier-layout">
+                    <!-- Input Console -->
+                    <div class="input-card card">
+                        <div class="card-header">
+                            <h4>Support Ticket Ingestion</h4>
+                            <p>Type custom ticket parameters or use a predefined operations template</p>
+                        </div>
+                        
+                        <!-- Templates Grid -->
+                        <div class="template-selector">
+                            <span class="selector-label">Load Template Case:</span>
+                            <div class="template-buttons">
+                                <button type="button" class="btn btn-outline" onclick="loadTemplate('technical')">Technical Issue</button>
+                                <button type="button" class="btn btn-outline" onclick="loadTemplate('billing')">Billing Inquiry</button>
+                                <button type="button" class="btn btn-outline" onclick="loadTemplate('cancel')">Cancellation Request</button>
+                                <button type="button" class="btn btn-outline" onclick="loadTemplate('product')">Product Inquiry</button>
+                                <button type="button" class="btn btn-outline" onclick="loadTemplate('refund')">Refund Request</button>
+                            </div>
+                        </div>
+
+                        <!-- Form -->
+                        <form id="classifier-form" class="mt-4">
+                            <div class="form-group">
+                                <label for="ticket-subject">Ticket Subject</label>
+                                <input type="text" id="ticket-subject" placeholder="e.g. Connection drops on core database replica..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="ticket-description">Ticket Description / Customer Message</label>
+                                <textarea id="ticket-description" rows="8" placeholder="Please describe the issue in detail. The text will be preprocessed (lowercasing, stopwords removal, lemmatization) and vectorized for LinearSVC inference." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-submit-classify">
+                                <span class="btn-text">Classify & Route Ticket</span>
+                                <span class="spinner hidden"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Result Panel -->
+                    <div class="result-card card flex-column" id="result-placeholder">
+                        <div class="placeholder-content">
+                            <div class="placeholder-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+                            </div>
+                            <h4>Awaiting Classification</h4>
+                            <p>Fill out the customer support ticket details and click "Classify & Route Ticket" to execute machine learning inference and view operational checklists.</p>
+                        </div>
+                    </div>
+
+                    <!-- Active Result Card (Hidden Initially) -->
+                    <div class="result-card card hidden" id="result-active">
+                        <div class="result-header">
+                            <div class="ticket-status-badge">
+                                <span class="pulse-indicator"></span>
+                                Live Ticket Classification
+                            </div>
+                            <h4 id="result-subject-text">Product setup</h4>
+                        </div>
+
+                        <div class="result-badges-row">
+                            <div class="result-badge-container">
+                                <span class="badge-title">Predicted Category</span>
+                                <span class="badge-value-pill" id="result-category-badge">Technical issue</span>
+                            </div>
+                            <div class="result-badge-container">
+                                <span class="badge-title">Predicted Priority</span>
+                                <span class="badge-value-pill priority-pill-critical" id="result-priority-badge">Critical</span>
+                            </div>
+                        </div>
+
+                        <hr class="divider">
+
+                        <!-- SLA Clock and Department -->
+                        <div class="routing-sla-section">
+                            <div class="routing-box">
+                                <div class="box-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                </div>
+                                <div class="box-text">
+                                    <span>Routing Target Dept.</span>
+                                    <strong id="result-department">DevOps Team</strong>
+                                </div>
+                            </div>
+                            <div class="sla-box">
+                                <div class="box-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alarm-clock"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 5 20"/><path d="M17.64 18.67 19 20"/></svg>
+                                </div>
+                                <div class="box-text">
+                                    <span>Resolution SLA Clock</span>
+                                    <strong id="result-sla-hours">1 Hour</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="divider">
+
+                        <!-- Operational Action Checklist -->
+                        <div class="operational-checklist">
+                            <h5>Suggested Action Checklist</h5>
+                            <ul id="result-checklist">
+                                <li>Verify database logs</li>
+                                <li>Check billing portal</li>
+                            </ul>
+                        </div>
+
+                        <hr class="divider">
+
+                        <!-- Preprocessing Metadata -->
+                        <div class="ml-meta-collapse">
+                            <h5>NLP Preprocessing Pipeline Metadata</h5>
+                            <div class="meta-item mt-2">
+                                <strong>Tokens Count after NLP Cleaning:</strong>
+                                <span id="meta-tokens-count">12 words</span>
+                            </div>
+                            <div class="meta-item">
+                                <strong>Preprocessed Input Sent to SVM:</strong>
+                                <code id="meta-cleaned-text">product setup peripherial compatibility</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: QUEUE CONSOLE -->
+            <section id="tab-queue" class="tab-content">
+                <div class="queue-card card">
+                    <div class="queue-header">
+                        <div class="queue-title-bar">
+                            <h4>Support Incident Queue</h4>
+                            <p>Simulated active ticket workflow categorized by LinearSVC and prioritized automatically</p>
+                        </div>
+                        
+                        <!-- Filters and Search -->
+                        <div class="queue-controls">
+                            <div class="search-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                <input type="text" id="queue-search" placeholder="Search subject or descriptions..." onkeyup="filterQueue()">
+                            </div>
+                            <div class="filter-group">
+                                <select id="filter-category" onchange="filterQueue()">
+                                    <option value="all">All Categories</option>
+                                    <option value="Technical issue">Technical issue</option>
+                                    <option value="Billing inquiry">Billing inquiry</option>
+                                    <option value="Cancellation request">Cancellation request</option>
+                                    <option value="Product inquiry">Product inquiry</option>
+                                    <option value="Refund request">Refund request</option>
+                                </select>
+                                <select id="filter-priority" onchange="filterQueue()">
+                                    <option value="all">All Priorities</option>
+                                    <option value="Critical">Critical</option>
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Queue Table -->
+                    <div class="table-responsive">
+                        <table class="queue-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ticket Details</th>
+                                    <th>Predicted Category</th>
+                                    <th>Predicted Priority</th>
+                                    <th>Target SLA</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="queue-table-body">
+                                <!-- Dynamically loaded rows -->
+                                <tr>
+                                    <td colspan="7" class="text-center py-8 text-zinc-500">Loading support ticket queue...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Ticket Detail Modal (Glassmorphism Overlay) -->
+    <div id="ticket-modal" class="modal-overlay hidden">
+        <div class="modal-content card">
+            <button class="modal-close" onclick="closeModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <div class="modal-header">
+                <span class="modal-ticket-id" id="modal-id-badge">TICKET #1002</span>
+                <h3 id="modal-subject">Database Replica Failure</h3>
+            </div>
+            <hr class="divider">
+            <div class="modal-body">
+                <div class="modal-detail-row">
+                    <div class="detail-col">
+                        <strong>Predicted Category:</strong>
+                        <span class="badge-value-pill" id="modal-category-badge">Technical issue</span>
+                    </div>
+                    <div class="detail-col">
+                        <strong>Predicted Priority:</strong>
+                        <span class="badge-value-pill" id="modal-priority-badge">Critical</span>
+                    </div>
+                </div>
+                
+                <div class="modal-text-block mt-4">
+                    <strong>Original Description:</strong>
+                    <p id="modal-description">Customer ticket description shows here.</p>
+                </div>
+                
+                <hr class="divider">
+                
+                <div class="modal-text-block">
+                    <strong>Routing Assignment:</strong>
+                    <p id="modal-department">DevOps Team</p>
+                </div>
+                
+                <div class="modal-text-block mt-3">
+                    <strong>Operational SLA Clock:</strong>
+                    <p id="modal-sla">1 Hour Response Target</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Bundle -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
